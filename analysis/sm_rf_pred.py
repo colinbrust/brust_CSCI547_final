@@ -63,7 +63,7 @@ def tune_hyperparameters(train_test):
 
     rf = RandomForestRegressor()
     rf_grid = RandomizedSearchCV(estimator=rf, param_distributions=random_grid,
-                                 n_iter=200, cv=5, n_jobs=10)
+                                 n_iter=200, cv=5, n_jobs=10, verbose=1)
 
     rf_grid.fit(x_train, y_train)
 

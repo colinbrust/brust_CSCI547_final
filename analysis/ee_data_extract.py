@@ -15,11 +15,7 @@ def extract_random_pts():
     # create imageCollection of Gridmet meteorology and SMAP soil moisture data
     stack = uf.get_data()
 
-    # Create list of dates to iterate over
-    date_start = dt.datetime.strptime('2016-01-01', '%Y-%m-%d')
-    date_end = dt.datetime.strptime('2018-12-31', '%Y-%m-%d')
-    diff = date_end - date_start
-    dates = [date_start + dt.timedelta(days=x) for x in range(diff.days + 1)]
+    dates = uf.get_dates()
 
     df_out = pd.DataFrame()
 

@@ -1,4 +1,5 @@
 import ee
+import datetime as dt
 from utility_functions import align_merge as am
 
 
@@ -38,6 +39,17 @@ def get_data():
     dat = dat.map(lambda img: img.addBands(ee.Image.pixelLonLat()))
 
     return dat
+
+
+def get_dates(ds='2016-01-01', de='2018-12-31'):
+
+    # Create list of dates to iterate over
+    date_start = dt.datetime.strptime(ds, '%Y-%m-%d')
+    date_end = dt.datetime.strptime(de, '%Y-%m-%d')
+    diff = date_end - date_start
+    dates = [date_start + dt.timedelta(days=x) for x in range(diff.days + 1)]
+
+    return dates
 
 
 def get_roi():
