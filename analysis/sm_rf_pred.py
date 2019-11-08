@@ -46,25 +46,6 @@ def run_rf_model(train_test, n_estimators=2000, min_samples_split=10, min_sample
     return rf
 
 
-# Visualize the tree created.
-def visualize_tree(rf_model, feat_names):
-    # Created with help from https://towardsdatascience.com/random-forest-in-python-24d0893d51c0
-    tree = rf_model.estimators_[5]
-
-    export_graphviz(tree, out_file='tree.dot', feature_names=feat_names, rounded=True, precision=1)
-    (graph,) = pydot.graph_from_dot_file('tree.dot')
-    graph.write_png('tree.png')
-
-
-# sort variables based on importance.
-def get_variable_importance(rf_model, feat_names):
-    # Created with help from https://towardsdatascience.com/random-forest-in-python-24d0893d51c0
-    imp = list(rf_model.feature_importances_)
-    feature_imp = [(feature, round(importance, 2)) for feature, importance in zip(feat_names, imp)]
-    feature_imp = sorted(feature_imp, key=lambda x: x[1], reverse=True)
-    [print('Variable: {:20} Importance: {}'.format(*pair)) for pair in feature_imp];
-
-
 # Create a random grid of hyperparameters to figure out what works the best
 def tune_hyperparameters(train_test):
 
@@ -89,25 +70,6 @@ def tune_hyperparameters(train_test):
     return rf_grid
 
 
-# Look at model accuracy
-def evaluate(model, test_features, test_labels):
-    # Created with help from https://towardsdatascience.com/random-forest-in-python-24d0893d51c0
-    predictions = model.predict(test_features)
-    errors = abs(predictions - test_labels)
-    mape = 100 * np.mean(errors / test_labels)
-    rmse = np.sqrt(mean_squared_error(test_labels, predictions))
-    accuracy = 100 - mape
-    r2 = r2_score(test_labels, predictions)
-    print('Model Performance')
-    print('Average Error: {:0.4f} degrees.'.format(np.mean(errors)))
-    print('Accuracy = {:0.2f}%.'.format(accuracy))
-
-    return {'mae': errors,
-            'accuracy': accuracy,
-            'rmse': rmse,
-            'r2': r2}
-
-
 # Create a model for range of scenarios, tune hyperparameters, run the best model.
 def train_model(df, method='rz'):
 
@@ -125,10 +87,10 @@ def train_model(df, method='rz'):
     model_tuned = tune_hyperparameters(train_test)
     params = model_tuned.best_params_
 
-    opt_model = run_rf_model(train_test, **params)
+    # opt_model = run_rf_model(train_test, **params)
 
     out_dict = {'train_test': train_test,
-                'opt_model': opt_model,
+                'opt_model': model_tuned,
                 'opt_params': params}
 
     pickle.dump(out_dict, open('/home/colin.brust/workspace/data/sm_ml_data/'+method+'_trained.pickle', 'wb'))
