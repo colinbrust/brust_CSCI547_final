@@ -4,6 +4,7 @@ import utility_functions.model_inputs as uf
 ee.Initialize()
 
 
+# Function to run random forest model in Earthengine using the hyperparameters that were learned from SKL.
 def run_ee_rf(method, asset_name):
 
     dat = uf.get_data()
@@ -64,7 +65,7 @@ def run_ee_rf(method, asset_name):
             break
 
 
-run_ee_rf('rz', 'classified_rz')
-run_ee_rf('surf', 'classified_surf')
-run_ee_rf('rz_full', 'classified_rz_full')
-run_ee_rf('surf_full', 'classified_surf_full')
+# run_ee_rf('rz', 'classified_rz')
+# run_ee_rf('surf', 'classified_surf')
+# run_ee_rf('rz_full', 'classified_rz_full')
+# run_ee_rf('surf_full', 'classified_surf_full')

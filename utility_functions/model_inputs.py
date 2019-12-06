@@ -2,7 +2,7 @@ import ee
 import datetime as dt
 from utility_functions import align_merge as am
 
-
+# Create image collection of SMAP L4_SM data
 def get_smap_data():
     sm2015 = ee.ImageCollection('users/colinbrust/l4rz_2015')
     sm2016 = ee.ImageCollection('users/colinbrust/l4rz_2016')
@@ -11,7 +11,7 @@ def get_smap_data():
 
     return sm2015.merge(sm2016).merge(sm2017).merge(sm2018).select(['surfMean', 'rzMean'])
 
-
+# Add a band to the image that contains the date
 def add_date_band(img):
     doy = img.date().getRelative('day', 'year')
     doy_band = ee.Image.constant(doy).uint16().rename('doy')
@@ -19,6 +19,7 @@ def add_date_band(img):
     return img.addBands(doy_band)
 
 
+# Select VPD min and max temperature, and relative humidity data from Gridmet.
 def get_gridmet_data(proj):
     gm = ee.ImageCollection('IDAHO_EPSCOR/GRIDMET') \
         .select(['vpd', 'tmmn', 'tmmx', 'rmin', 'rmax']) \
@@ -29,6 +30,7 @@ def get_gridmet_data(proj):
     return gm.map(add_date_band)
 
 
+# Get all the data specified above. Also, add a band to the image that contains lat, lon info.
 def get_data():
     smap = get_smap_data()
     proj = smap.first().projection()
@@ -40,7 +42,7 @@ def get_data():
 
     return dat
 
-
+# Returns a list of dates between a start and end date range.
 def get_dates(ds='2016-01-01', de='2018-12-31'):
 
     # Create list of dates to iterate over
@@ -51,7 +53,7 @@ def get_dates(ds='2016-01-01', de='2018-12-31'):
 
     return dates
 
-
+# Earthengine geometry of CONUS domain.
 def get_roi():
     return ee.Geometry.Polygon(
         [[[-124.08817866437181, 44.20536642973822],

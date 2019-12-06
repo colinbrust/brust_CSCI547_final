@@ -7,6 +7,7 @@ from sklearn.model_selection import train_test_split, RandomizedSearchCV
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error,  r2_score
 from sklearn.tree import export_graphviz
+import os
 
 
 # Read in data, convert to np arrays, and then split into train and test sets
@@ -32,7 +33,7 @@ def gather_split_data(df, cols=None, rz=True):
     return [x_train, x_test, y_train, y_test, feat_names]
 
 
-# run baseline model
+# Function to run a basic RandomForest model
 def run_rf_model(train_test, n_estimators=2000, min_samples_split=10, min_samples_leaf=5, max_features='auto',
                  max_depth=None, bootstrap=True):
 
@@ -46,7 +47,7 @@ def run_rf_model(train_test, n_estimators=2000, min_samples_split=10, min_sample
     return rf
 
 
-# Create a random grid of hyperparameters to figure out what works the best
+# Create a random grid of hyperparameters to figure out which combination works the best
 def tune_hyperparameters(train_test):
 
     x_train, x_test, y_train, y_test, feat_names = train_test
@@ -71,7 +72,7 @@ def tune_hyperparameters(train_test):
 
 
 # Create a model for range of scenarios, tune hyperparameters, run the best model.
-def train_model(df, method='rz'):
+def train_model(df, method='rz', out_dir='/home/colin.brust/workspace/data/sm_ml_data'):
 
     if method == 'rz':
         train_test = gather_split_data(df, cols=['tmmn', 'tmmx', 'vpd'], rz=True)
@@ -93,7 +94,9 @@ def train_model(df, method='rz'):
                 'opt_model': model_tuned,
                 'opt_params': params}
 
-    pickle.dump(out_dict, open('/home/colin.brust/workspace/data/sm_ml_data/'+method+'_trained.pickle', 'wb'))
+    out_file = os.path.join(out_dir, method+'_trained.pickle')
+
+    pickle.dump(out_dict, open(out_file, 'wb'))
 
     return out_dict
 

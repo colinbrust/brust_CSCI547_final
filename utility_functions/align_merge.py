@@ -1,6 +1,6 @@
 import ee
 
-
+# Function to join two image collections based on images with the nearest dates.
 def data_join(left, right):
 
     data_filter = ee.Filter.maxDifference(
@@ -19,7 +19,7 @@ def data_join(left, right):
 
     return out
 
-
+# Function to reproject and resample resolution of an image collection based on an input projection.
 def apply_match_proj(coll, proj):
 
     def match_proj(img):
