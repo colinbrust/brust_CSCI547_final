@@ -9,6 +9,7 @@ def run_ee_rf(method, asset_name):
 
     dat = uf.get_data()
 
+    # Target and input bands for various methods
     if method == 'rz':
         bands = ['tmmn', 'tmmx', 'vpd']
         target_band = 'rzMean'
@@ -24,8 +25,10 @@ def run_ee_rf(method, asset_name):
     else:
         raise ValueError("'method' argument must either be 'rz', 'surf', 'rz_full', or 'surf_full'.")
 
+    # read in training points
     training = ee.FeatureCollection('users/colinbrust/train_pts_small')
 
+    # Create random forest classifier object
     classifier = ee.Classifier.randomForest(
         numberOfTrees=50,
         variablesPerSplit=0,
@@ -37,6 +40,7 @@ def run_ee_rf(method, asset_name):
 
     dates = uf.get_dates(ds='2016-01-01', de='2016-12-31')
 
+    # Make SM estimates for every day in 2016
     for d in dates:
         while True:
             try:
@@ -44,6 +48,7 @@ def run_ee_rf(method, asset_name):
                 img = dat.filterDate(str(d.date())).first()
                 classified = ee.Image(img.classify(classifier).copyProperties(img, ['system:time_start']))
 
+                # Export to earthengine asset
                 task = ee.batch.Export.image.toAsset(
                     image=classified,
                     assetId='users/colinbrust/{}/classified_{}'.format(asset_name, str(d.date()).replace('-', '')),

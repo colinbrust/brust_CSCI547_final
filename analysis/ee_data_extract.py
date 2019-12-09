@@ -7,6 +7,7 @@ import utility_functions.model_inputs as uf
 ee.Initialize()
 
 
+# Function to extract random training points across the CONUS domain
 def extract_random_pts():
 
      # import CONUS roi
