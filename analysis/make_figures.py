@@ -33,6 +33,22 @@ def plot_timeseries(df='/mnt/e/PycharmProjects/sm_ml/plotting_data/l4_ts.csv'):
     plt.savefig('/mnt/e/PycharmProjects/sm_ml/figures/SM_TS.png', 300)
 
 
+def get_timeseries_error(df='/mnt/e/PycharmProjects/sm_ml/plotting_data/l4_ts.csv'):
+
+    df = pd.read_csv(df)
+
+    rz_rmse = np.sqrt(metrics.mean_squared_error(df.L4_rz.values, df.pred_rz.values))
+    surf_rmse = np.sqrt(metrics.mean_squared_error(df.L4_surf.values, df.pred_surf.values))
+
+    rz_r2 = rsquared(df.L4_rz.values, df.pred_rz.values)
+    surf_r2 = rsquared(df.L4_surf.values, df.pred_surf.values)
+
+    return {'rz_rmse': rz_rmse,
+            'surf_rmse': surf_rmse,
+            'rz_r2': rz_r2,
+            'surf_r2': surf_r2}
+
+
 # map the different methods of SM estimates for the CONUS domain.
 def map_sm(ras='/Users/cbandjelly/PycharmProjects/sm_ml/plotting_data/sm_ml_fig.tif'):
 
