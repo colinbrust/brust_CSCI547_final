@@ -1,2 +1,2 @@
-# sm_ml
-Machine Learning Final Project
+# brust_CSCI547_final
+Colin Brust CSCI 547 Machine Learning Final Project
